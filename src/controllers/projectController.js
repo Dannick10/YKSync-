@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Project = require("../models/Project");
+const response = require('../utils/response')
 
 const createProject = async (req, res) => {
   try {
@@ -56,7 +57,6 @@ const createProject = async (req, res) => {
         .json({ erros: [response.errors.PROJECT.CREATE_FAILED.message] });
       return;
     }
-    d;
 
     await newProject.save();
 
@@ -75,7 +75,11 @@ const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
 
+
+
     const project = await Project.findByIdAndUpdate({ _id: id }, req.body);
+
+    console.log(project)
 
     if (!project) {
       return res
