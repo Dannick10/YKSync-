@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = require("../models/User");
 const generateWebToken = require("../utils/generateWebToken");
 const bycript = require("bcryptjs");
+const response = require('../utils/response')
 
 const SignUser = async (req, res) => {
   const { name, password, email } = req.body;
@@ -9,7 +10,9 @@ const SignUser = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user) {
-    res.status(202).json({ erros: ["por favor utilized outro e-mail"] });
+    res
+      .status(response.errors.EMAIL_IN_USE.status)
+      .json({ erros: [response.errors.EMAIL_IN_USE.message] });
     return;
   }
 
@@ -23,12 +26,15 @@ const SignUser = async (req, res) => {
   });
 
   if (!data) {
-    res.status(422).json({ erros: ["houve um erro, tente mais tarde"] });
+    res
+      .status(response.errors.SERVER_ERROR)
+      .json({ erros: [response.errors.SERVER_ERROR] });
   }
 
-  res.status(202).json({
+  res.status(response.success.USER_CREATED.status).json({
     _id: data._id,
     token: generateWebToken(data._id),
+    message: response.success.USER_CREATED.message,
   });
 };
 
@@ -37,58 +43,58 @@ const loginUser = async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) {
-    res.status(404).json({ erros: ["Essa conta não existe"] });
-    return;
-  }
-
   if (!(await bycript.compare(password, user.password))) {
-    res.status(422).json({ erros: ["senha incorreta"] });
+    res
+      .status(response.errors.INVALID_CREDENTIALS.status)
+      .json({ erros: [response.errors.INVALID_CREDENTIALS.message] });
     return;
   }
 
-  res.status(201).json({
+  res.status(response.success.LOGIN_SUCCESS.status).json({
     _id: user._id,
     admin: user.admin,
     token: generateWebToken(user._id),
+    message: response.success.LOGIN_SUCCESS.message,
   });
 };
 
 const getCurrentUser = async (req, res) => {
   const user = req.user;
 
-  res.status(200).json({ user });
+  res.status(response.success.USER_FETCHED.status).json({ user });
 };
 
-const updateUser = async (req,res) => {
+const updateUser = async (req, res) => {
+  const { name, password } = req.body;
 
-  const {name,password} = req.body
+  const user = await User.findOne(req.user._id).select("-password");
 
-  const user = await User.findOne(req.user._id).select('-password')
-  
-    if(!user) {
-      res.status(404).json({erros: ["Não foi possivel encontrar esse usuario"]})
-    }
-
-  if(name) {
-    user.name = name 
+  if (!user) {
+    res
+      .status(response.errors.USER_NOT_FOUND.status)
+      .json({ erros: [response.errors.USER_NOT_FOUND.message] });
   }
 
-  if(password) {
-    const salt =  await bycript.genSalt()
-    const passwordHash = await bycript.hash(password, salt)
-    user.password = passwordHash 
+  if (name) {
+    user.name = name;
   }
 
-  await user.save()
+  if (password) {
+    const salt = await bycript.genSalt();
+    const passwordHash = await bycript.hash(password, salt);
+    user.password = passwordHash;
+  }
 
-  res.status(202).json({user})
+  await user.save();
 
-}
+  res
+    .status(response.success.USER_UPDATED.status)
+    .json({ message: response.success.USER_UPDATED.message });
+};
 
 module.exports = {
   SignUser,
   loginUser,
   getCurrentUser,
-  updateUser
+  updateUser,
 };

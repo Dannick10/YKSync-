@@ -51,16 +51,23 @@ const createProject = async (req, res) => {
     });
 
     if (!newProject) {
-      res.status(404).json({ erros: ["não foi possivel criar"] });
+      res
+        .status(response.errors.PROJECT.CREATE_FAILED.status)
+        .json({ erros: [response.errors.PROJECT.CREATE_FAILED.message] });
       return;
     }
+    d;
 
     await newProject.save();
 
-    res.status(200).json({ newProject });
+    res
+      .status(response.success.PROJECT.CREATED.status)
+      .json({ message: response.success.PROJECT.CREATED.message, newProject });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ erros: ["não foi possivel criar"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
@@ -71,13 +78,19 @@ const updateProject = async (req, res) => {
     const project = await Project.findByIdAndUpdate({ _id: id }, req.body);
 
     if (!project) {
-      return res.status(304).json({ erros: ["Projeto não encontrado."] });
+      return res
+        .status(response.errors.PROJECT.UPDATE_FAILED.status)
+        .json({ erros: [response.errors.PROJECT.UPDATE_FAILED.message] });
     }
 
-    res.status(202).json({ project });
+    res
+      .status(202)
+      .json({ message: response.success.PROJECT.UPDATED, project });
   } catch (err) {
     console.log(err);
-    res.status(404).json({ erros: ["houve um erro volte mais tarde"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
@@ -86,19 +99,27 @@ const deleteProject = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ erros: ["precisa de um projeto válido"] });
+      return res
+        .status(response.errors.INVALID_ID.status)
+        .json({ erros: [response.errors.INVALID_ID.message] });
     }
 
     const project = await Project.findByIdAndDelete({ _id: id });
 
     if (!project) {
-      return res.status(400).json({ erros: ["Projeto não encontrado"] });
+      return res
+        .status(response.errors.PROJECT.DELETE_FAILED.status)
+        .json({ erros: [response.errors.PROJECT.DELETE_FAILED.message] });
     }
 
-    res.status(202).json({ project });
+    res
+      .status(response.success.PROJECT.DELETED.status)
+      .json({ message: response.success.PROJECT.DELETED.message, project });
   } catch (err) {
     console.log(err);
-    res.status(404).json({ erros: ["houve um erro volte mais tarde"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
@@ -110,9 +131,14 @@ const getAllProject = async (req, res) => {
       .select("answerable")
       .select("startDate")
       .select("endDate");
-    res.status(202).json({ project });
+
+    res
+      .status(response.success.PROJECT.FETCHED.status)
+      .json({ message: response.success.PROJECT.FETCHED.message, project });
   } catch (err) {
-    res.status(404).json({ erros: ["houve um erro volte mais tarde"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
@@ -121,7 +147,9 @@ const getUserProject = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ erros: ["precisa de um usuario válido"] });
+      return res
+        .status(response.errors.INVALID_ID.status)
+        .json({ erros: [response.errors.INVALID_ID.message] });
     }
 
     const project = await Project.find({ userId: id })
@@ -133,13 +161,17 @@ const getUserProject = async (req, res) => {
 
     if (!project) {
       return res
-        .status(400)
-        .json({ erros: ["não foi possivel achar projetos do usuario"] });
+        .status(response.errors.PROJECT.NOT_FOUND.status)
+        .json({ erros: [response.errors.PROJECT.NOT_FOUND.message] });
     }
 
-    res.status(202).json({ project });
+    res
+      .status(response.success.PROJECT.FETCHED.status)
+      .json({ message: response.success.PROJECT.FETCHED.message, project });
   } catch (err) {
-    res.status(404).json({ erros: ["houve um erro volte mais tarde"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
@@ -148,22 +180,26 @@ const getProject = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.isValidObjectId(id)) {
-        return res.status(400).json({ erros: ["precisa de um usuario válido"] });
-      }
+      return res
+        .status(response.errors.INVALID_ID.status)
+        .json({ erros: [response.errors.INVALID_ID.message] });
+    }
 
-    const project = await Project.findOne({_id: id})
+    const project = await Project.findOne({ _id: id });
 
     if (!project) {
-        return res
-          .status(400)
-          .json({ erros: ["não foi possivel achar projeto"] });
-      }
+      return res
+        .status(response.errors.PROJECT.NOT_FOUND.status)
+        .json({ erros: [response.errors.PROJECT.NOT_FOUND.message] });
+    }
 
-
-    res.status(202).json({project})
-
+    res
+      .status(response.success.PROJECT.FETCHED.status)
+      .json({ message: response.success.PROJECT.FETCHED.message, project });
   } catch (err) {
-    res.status(404).json({ erros: ["houve um erro volte mais tarde"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 

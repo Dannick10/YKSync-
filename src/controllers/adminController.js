@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
 const User = require("../models/User");
+const response = require("../utils/response");
 
 const admPermissionUser = async (req, res) => {
   const { _id } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(_id)) {
-    return res.status(400).json({ error: "ID inválido" });
+    return res
+      .status(response.errors.INVALID_ID.status)
+      .json({ error: [response.errors.INVALID_ID.message] });
   }
 
   try {
@@ -13,27 +16,29 @@ const admPermissionUser = async (req, res) => {
 
     if (!user) {
       res
-        .status(404)
-        .json({ erros: ["Não existe esse usuario para agregar permissao"] });
+        .status(response.errors.ADMIN_PERMISSION_ERROR.status)
+        .json({ erros: [response.errors.ADMIN_PERMISSION_ERROR.message] });
     }
 
     user.admin = true;
 
     await user.save();
 
-    res.status(202).json({ user });
+    res.status(202).json(response.success.ADMIN_PERMISSION_GRANTED);
   } catch (err) {
-    res.status(404).send({ erros: ["error no servidor"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .send({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
 const getusers = async (req, res) => {
-
   try {
     const query = {};
     if (req.query.name) {
       query.name = { $regex: req.query.name, $options: "i" };
     }
+    d;
     if (req.query.admin !== undefined) {
       query.admin = req.query.admin === "true";
     }
@@ -42,7 +47,9 @@ const getusers = async (req, res) => {
 
     res.status(202).json(users);
   } catch (err) {
-    res.status(404).json({ erros: ["houve um erro"] });
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .send({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
