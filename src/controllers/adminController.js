@@ -38,7 +38,7 @@ const getusers = async (req, res) => {
     if (req.query.name) {
       query.name = { $regex: req.query.name, $options: "i" };
     }
-    d;
+ 
     if (req.query.admin !== undefined) {
       query.admin = req.query.admin === "true";
     }

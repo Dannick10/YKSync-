@@ -43,6 +43,10 @@ const loginUser = async (req, res) => {
 
   const user = await User.findOne({ email });
 
+  if(!user) {
+    return res.status(response.errors.USER_NOT_FOUND.status).json({erros: [response.errors.USER_NOT_FOUND.message]})
+  }
+
   if (!(await bycript.compare(password, user.password))) {
     res
       .status(response.errors.INVALID_CREDENTIALS.status)

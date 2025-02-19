@@ -43,54 +43,11 @@ const projectCreateValidate = () => {
       .withMessage("necessário as tecnologias banco de dados utilizado")
       .optional(),
 
-    body("apis")
-      .isArray()
-      .withMessage("necessário informar api utilizada")
-      .optional(),
-
-    body("methodology")
-      .isString()
-      .withMessage("Necessário informar a metodologia")
-      .optional(),
-
     body("tests").isArray().withMessage("testes não preenchido"),
 
     body("deploy").isString().withMessage("Deploy não preenchido"),
-
-    body("cicd")
-      .isString()
-      .withMessage("Necessário informar se há integração contínua (CI/CD)"),
-
-    body("rollback")
-      .isString()
-      .withMessage("Necessário informar se há possibilidade de rollback"),
-
-    body("documentation")
-      .isString()
-      .withMessage("Necessário informar se há documentação"),
-
-    body("updateDocumentation")
-      .isString()
-      .withMessage("Necessário informar se há documentação atualizada"),
-
-    body("projectManager")
-      .isString()
-      .withMessage("Necessário informar o gerente do projeto"),
-
-    body("supportLead")
-      .isString()
-      .withMessage("Necessário informar o líder de suporte"),
-
-    body("supportTeam")
-      .isArray()
-      .withMessage("Necessário informar a equipe de suporte"),
-
-    body("supportAvailable")
-      .isString()
-      .withMessage("Necessário informar se o suporte está disponível"),
   ];
 };
-
 
 module.exports = {
   projectCreateValidate,
