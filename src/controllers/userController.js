@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   const user = req.user;
-
+  console.log(user)
   res.status(response.success.USER_FETCHED.status).json({ user });
 };
 

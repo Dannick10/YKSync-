@@ -1,54 +1,13 @@
 const mongoose = require("mongoose");
 const Project = require("../models/Project");
-const response = require('../utils/response')
+const response = require("../utils/response");
 
 const createProject = async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      answerable,
-      startDate,
-      endDate,
-      frontend,
-      backend,
-      database,
-      apis,
-      methodology,
-      tests,
-      deploy,
-      cicd,
-      rollback,
-      documentation,
-      updateDocumentation,
-      projectManager,
-      supportLead,
-      supportTeam,
-      supportAvailable,
-    } = req.body;
 
     const newProject = new Project({
       userId: req.user._id,
-      name,
-      description,
-      answerable,
-      startDate,
-      endDate,
-      frontend,
-      backend,
-      database,
-      apis,
-      methodology,
-      tests,
-      deploy,
-      cicd,
-      rollback,
-      documentation,
-      updateDocumentation,
-      projectManager,
-      supportLead,
-      supportTeam,
-      supportAvailable,
+      ...req.body
     });
 
     if (!newProject) {
@@ -75,11 +34,9 @@ const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
 
-
-
     const project = await Project.findByIdAndUpdate({ _id: id }, req.body);
 
-    console.log(project)
+    console.log(project);
 
     if (!project) {
       return res
@@ -129,16 +86,25 @@ const deleteProject = async (req, res) => {
 
 const getAllProject = async (req, res) => {
   try {
-    const project = await Project.find()
-      .select("name")
-      .select("description")
-      .select("answerable")
-      .select("startDate")
-      .select("endDate");
+    const { page = 1, limit = 6 } = req.query;
 
-    res
-      .status(response.success.PROJECT.FETCHED.status)
-      .json({ message: response.success.PROJECT.FETCHED.message, project });
+    const project = await Project.find()
+      .select("name description answerable startDate endDate")
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
+
+    const totalProjects = await Project.countDocuments();
+
+    res.status(response.success.PROJECT.FETCHED.status).json({
+      message: response.success.PROJECT.FETCHED.message,
+      project,
+      meta: {
+        totalProjects,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalProjects / limit),
+        perPage: parseInt(limit),
+      },
+    });
   } catch (err) {
     res
       .status(response.errors.SERVER_ERROR.status)
@@ -149,6 +115,7 @@ const getAllProject = async (req, res) => {
 const getUserProject = async (req, res) => {
   try {
     const { id } = req.params;
+    const { page = 1, limit = 6 } = req.query;
 
     if (!mongoose.isValidObjectId(id)) {
       return res
@@ -156,23 +123,34 @@ const getUserProject = async (req, res) => {
         .json({ erros: [response.errors.INVALID_ID.message] });
     }
 
-    const project = await Project.find({ userId: id })
-      .select("name")
-      .select("description")
-      .select("answerable")
-      .select("startDate")
-      .select("endDate");
 
-    if (!project) {
+    const totalProjects = await Project.countDocuments({ userId: id });
+
+
+    const project = await Project.find({ userId: id })
+      .select("name description answerable startDate endDate")
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
+
+
+    if (project.length === 0) {
       return res
         .status(response.errors.PROJECT.NOT_FOUND.status)
         .json({ erros: [response.errors.PROJECT.NOT_FOUND.message] });
     }
 
-    res
-      .status(response.success.PROJECT.FETCHED.status)
-      .json({ message: response.success.PROJECT.FETCHED.message, project });
+    res.status(response.success.PROJECT.FETCHED.status).json({
+      message: response.success.PROJECT.FETCHED.message,
+      project, 
+      meta: {
+        totalProjects,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalProjects / limit),
+        perPage: parseInt(limit),
+      },
+    });
   } catch (err) {
+    console.log(err);
     res
       .status(response.errors.SERVER_ERROR.status)
       .json({ erros: [response.errors.SERVER_ERROR.message] });
