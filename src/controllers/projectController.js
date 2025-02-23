@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const Project = require("../models/Project");
 const response = require("../utils/response");
+const StatusUser = require("../models/StatusUser");
 
 const createProject = async (req, res) => {
   try {
-
     const newProject = new Project({
       userId: req.user._id,
-      ...req.body
+      ...req.body,
     });
 
     if (!newProject) {
@@ -17,8 +17,26 @@ const createProject = async (req, res) => {
       return;
     }
 
-    await newProject.save();
+    let statusUser = await StatusUser.findOne({ userId: req.user._id });
 
+    if (!statusUser) {
+      statusUser = new StatusUser({
+        userId: req.user._id,
+        projectsTotal: 1,
+        projectsCurrents: 1,
+        projectDate: [
+          {
+            name: newProject.name,
+            startDate: newProject.startDate,
+            endDate: newProject.endDate,
+          },
+        ],
+      });
+    } 
+
+    await statusUser.save();
+
+    await newProject.save();
     res
       .status(response.success.PROJECT.CREATED.status)
       .json({ message: response.success.PROJECT.CREATED.message, newProject });
@@ -35,8 +53,6 @@ const updateProject = async (req, res) => {
     const { id } = req.params;
 
     const project = await Project.findByIdAndUpdate({ _id: id }, req.body);
-
-    console.log(project);
 
     if (!project) {
       return res
@@ -115,7 +131,7 @@ const getAllProject = async (req, res) => {
 const getUserProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const { page = 1, limit = 6 } = req.query;
+    const { page = 1, limit = 15 } = req.query;
 
     if (!mongoose.isValidObjectId(id)) {
       return res
@@ -123,15 +139,12 @@ const getUserProject = async (req, res) => {
         .json({ erros: [response.errors.INVALID_ID.message] });
     }
 
-
     const totalProjects = await Project.countDocuments({ userId: id });
-
 
     const project = await Project.find({ userId: id })
       .select("name description answerable startDate endDate")
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
-
 
     if (project.length === 0) {
       return res
@@ -141,7 +154,7 @@ const getUserProject = async (req, res) => {
 
     res.status(response.success.PROJECT.FETCHED.status).json({
       message: response.success.PROJECT.FETCHED.message,
-      project, 
+      project,
       meta: {
         totalProjects,
         currentPage: parseInt(page),

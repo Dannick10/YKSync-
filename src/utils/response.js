@@ -51,6 +51,12 @@ const response = {
       status: 401,
       message: "E-mail ou senha incorretos.",
     },
+    status: {
+      get: {
+        status: 404,
+        message: "Status não encontrado.",
+      },
+    }
   },
   success: {
     ADMIN_PERMISSION_GRANTED: {
@@ -91,7 +97,13 @@ const response = {
         message: "Projetos recuperados com sucesso.",
       },
     },
-  },
+    status: {
+      get: {
+        status: 202,
+        message: "Status obtido com sucesso.",
+      },
+    }
+  }
 };
 
 
