@@ -6,7 +6,7 @@ const response = require("../utils/response");
 const getStatusUser = async (req, res) => {
   try {
     const projects = await Project.find({ userId: req.user._id }).select(
-      "name startDate endDate status"
+      "name startDate endDate status color"
     );
 
     if (!projects.length) {

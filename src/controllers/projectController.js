@@ -102,10 +102,10 @@ const deleteProject = async (req, res) => {
 
 const getAllProject = async (req, res) => {
   try {
-    const { page = 1, limit = 6 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
     const project = await Project.find()
-      .select("name description answerable startDate endDate")
+      .select("name description answerable startDate endDate color")
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
 
@@ -131,7 +131,7 @@ const getAllProject = async (req, res) => {
 const getUserProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const { page = 1, limit = 15 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
     if (!mongoose.isValidObjectId(id)) {
       return res
@@ -142,7 +142,7 @@ const getUserProject = async (req, res) => {
     const totalProjects = await Project.countDocuments({ userId: id });
 
     const project = await Project.find({ userId: id })
-      .select("name description answerable startDate endDate")
+      .select("name description answerable startDate endDate color")
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
 

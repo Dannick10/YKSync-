@@ -5,6 +5,7 @@ const projectSchema = new Schema(
   {
     userId: mongoose.ObjectId,
     name: String,
+    color: String,
     status: { type: String, default: "current" },
     description: String,
     answerable: String,

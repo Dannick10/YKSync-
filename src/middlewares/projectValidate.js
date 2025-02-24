@@ -14,6 +14,12 @@ const projectCreateValidate = () => {
       .isLength({ min: 10 })
       .withMessage("Descrição não pode ser menor que 10 caracteres"),
 
+    body("color")
+    .isString()
+    .withMessage("cor obrigatória"),
+
+    body("status").isString().withMessage("Descrição obrigatória"),
+
     body("answerable")
       .isString()
       .withMessage("Necessário nome do responsável")
@@ -45,7 +51,18 @@ const projectCreateValidate = () => {
 
     body("tests").isArray().withMessage("testes não preenchido"),
 
-    body("deploy").isString().withMessage("Deploy não preenchido"),
+    body("linkDeploy")
+      .isString()
+      .withMessage("Deploy não preenchido")
+      .isString()
+      .withMessage("O link do deploy precisa ser uma string")
+      .optional(),
+    body("linkRepository")
+      .isString()
+      .withMessage("Deploy não preenchido")
+      .isString()
+      .withMessage("O link do repositorio precisa ser uma string")
+      .optional(),
   ];
 };
 
