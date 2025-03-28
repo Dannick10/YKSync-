@@ -15,7 +15,8 @@ const projectSchema = new Schema(
     backend: [String],
     database: [String],
     tests: [String],
-    deploy: String,
+    linkDeploy: String,
+    linkRepository: String
   },
   {
     timestamps: true,
