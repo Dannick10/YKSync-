@@ -18,7 +18,6 @@ const getStatusUser = async (req, res) => {
 
     const projectsCurrent = projects.filter((p) => p.status === "current");
     const projectsFinish = projects.filter((p) => p.status === "finish");
-    const projectsOverdue = projects.filter((p) => p.status === "overdue");
 
     let statusUser = await StatusUser.findOne({ userId: req.user._id });
 
@@ -30,7 +29,6 @@ const getStatusUser = async (req, res) => {
     statusUser.projectsCurrents = projectsCurrent.length;
     statusUser.projectsFinish = projectsFinish.length;
     statusUser.projectsUnfinished = projects.length - projectsFinish.length;
-    statusUser.projectsOverdue = projectsOverdue.length
 
     await statusUser.save();
 
@@ -40,7 +38,6 @@ const getStatusUser = async (req, res) => {
       projectsTotal: projects,
       projectsCurrent,
       projectsFinish,
-      projectsOverdue,
     });
   } catch (error) {
     console.error("Error fetching user status:", error);

@@ -71,20 +71,6 @@ const userUpdateValidator = () => {
 
         return true;
       }),
-      body("password")
-      .isString()
-      .withMessage("A senha é obrigatoria")
-      .isLength({ min: 5 })
-      .withMessage("A senha precisa ter no minimo 5 caracteres."),
-    body("confirmPassword")
-      .isString()
-      .withMessage("confirme a sednha")
-      .custom((value, {req}) => {
-        if(value !== req.body.password) {
-                throw new Error("A senha não coincidem")
-        }
-        return true
-      })
   ]
 }
 

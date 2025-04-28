@@ -24,10 +24,6 @@ const StatusUserSchema = new Schema(
       type: Number,
       default: 0,
     },
-    projectsOverdue: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,

@@ -132,15 +132,13 @@ const getUserProject = async (req, res) => {
   try {
     const { id } = req.params;
     const { page = 1, limit = 10 } = req.query;
-    const currentDate = new Date();
+    const filters = {};
 
     if (!mongoose.isValidObjectId(id)) {
       return res
         .status(response.errors.INVALID_ID.status)
-        .json({ errors: [response.errors.INVALID_ID.message] });
+        .json({ erros: [response.errors.INVALID_ID.message] });
     }
-
-    const filters = { userId: id };
 
     if (req.query.name) {
       filters.name = { $regex: req.query.name, $options: "i" };
@@ -150,29 +148,9 @@ const getUserProject = async (req, res) => {
       filters.status = req.query.status;
     }
 
-    if (req.query.startDate) {
-      filters.startDate.$gte = new Date(req.query.startDate);
-    }
-
-    if (req.query.endDate) {
-      filters.endDate.$lte = new Date(req.query.endDate);
-    }
-
-    await Project.updateMany(
-      {
-        userId: id,
-        endDate: { $lt: currentDate },
-        status: "current",
-      },
-      { $set: { status: "overdue" } }
-    );
+    filters.userId = id;
 
     const totalProjects = await Project.countDocuments(filters);
-
-    const overdueProjectsCount = await Project.countDocuments({
-      userId: id,
-      status: "overdue",
-    });
 
     const project = await Project.find(filters)
       .select("name description answerable startDate endDate color status")
@@ -182,7 +160,7 @@ const getUserProject = async (req, res) => {
     if (project.length === 0) {
       return res
         .status(response.errors.PROJECT.NOT_FOUND.status)
-        .json({ errors: [response.errors.PROJECT.NOT_FOUND.message] });
+        .json({ erros: [response.errors.PROJECT.NOT_FOUND.message] });
     }
 
     res.status(response.success.PROJECT.FETCHED.status).json({
@@ -190,17 +168,16 @@ const getUserProject = async (req, res) => {
       project,
       meta: {
         totalProjects,
-        overdueProject: overdueProjectsCount,
         currentPage: parseInt(page),
-        totalPages: Math.ceil(totalProjects / parseInt(limit)),
+        totalPages: Math.ceil(totalProjects / limit),
         perPage: parseInt(limit),
       },
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     res
       .status(response.errors.SERVER_ERROR.status)
-      .json({ errors: [response.errors.SERVER_ERROR.message] });
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
   }
 };
 
