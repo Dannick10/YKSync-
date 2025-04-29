@@ -83,9 +83,9 @@ Acesse o Repositório do Frontend: [YKMiniURL Repositório Frontend](https://git
 ### Licença
 Distribuído sob a licença MIT. Veja LICENSE para mais informações.
 
-### 📞 Contato
-Daniel Rocha — @futurodevdaniel
-Email: ykdanieldev@gmail.com
+  <a href="https://www.linkedin.com/in/ykdanielrocha" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
 
 ### Observação
 Este projeto está em constante evolução. Fique à vontade para contribuir, sugerir melhorias ou reportar problemas!
