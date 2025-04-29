@@ -4,7 +4,7 @@ const express = require('express')
 const cors = require('cors')
 
 const app = express()
-const port = process.env.port
+const port = process.env.port || 8081
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
