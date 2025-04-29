@@ -1,4 +1,4 @@
-# Yksynk — Gerenciador de Projetos Moderno
+# Yksynck — Gerenciador de Projetos Moderno
 
 ![ChatGPT Image Apr 29, 2025, 03_01_05 PM](https://github.com/user-attachments/assets/7eccc0c6-137f-4c07-83cb-e7f594dc758b)
 
