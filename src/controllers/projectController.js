@@ -163,6 +163,16 @@ const getUserProject = async (req, res) => {
         .json({ erros: [response.errors.PROJECT.NOT_FOUND.message] });
     }
 
+    const currentDate = new Date();
+
+    for (const item of project) {
+      if (item.endDate < currentDate && item.status !== "finish" && item.status !== "overdue") {
+        item.status = "overdue";
+        await item.save();
+      }
+    }
+
+
     res.status(response.success.PROJECT.FETCHED.status).json({
       message: response.success.PROJECT.FETCHED.message,
       project,
