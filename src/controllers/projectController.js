@@ -71,6 +71,38 @@ const updateProject = async (req, res) => {
   }
 };
 
+const updateStatusProject = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const project = await Project.findById({_id: id})
+
+    if(!project) {
+      return res
+      .status(response.errors.PROJECT.UPDATE_FAILED.status)
+      .json({ erros: [response.errors.PROJECT.UPDATE_FAILED.message] });
+    }
+
+    if(project.status !== "finish") {
+      project.status = "finish"
+    } else {
+      project.status = "current"
+    }
+
+    await project.save()
+
+    res
+    .status(202)
+    .json({ message: response.success.PROJECT.UPDATED, project });
+
+  } catch (err) {
+    res
+      .status(response.errors.SERVER_ERROR.status)
+      .json({ erros: [response.errors.SERVER_ERROR.message] });
+  }
+};
+
 const deleteProject = async (req, res) => {
   try {
     const { id } = req.params;
@@ -166,12 +198,15 @@ const getUserProject = async (req, res) => {
     const currentDate = new Date();
 
     for (const item of project) {
-      if (item.endDate < currentDate && item.status !== "finish" && item.status !== "overdue") {
+      if (
+        item.endDate < currentDate &&
+        item.status !== "finish" &&
+        item.status !== "overdue"
+      ) {
         item.status = "overdue";
         await item.save();
       }
     }
-
 
     res.status(response.success.PROJECT.FETCHED.status).json({
       message: response.success.PROJECT.FETCHED.message,
@@ -222,6 +257,7 @@ const getProject = async (req, res) => {
 module.exports = {
   createProject,
   updateProject,
+  updateStatusProject,
   deleteProject,
   getAllProject,
   getUserProject,
