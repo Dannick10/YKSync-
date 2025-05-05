@@ -39,6 +39,28 @@ const response = {
         message: "Houve um erro com o projeto.",
       },
     },
+    TASK: {
+      NOT_FOUND: {
+        status: 404,
+        message: "task não encontrado.",
+      },
+      CREATE_FAILED: {
+        status: 500,
+        message: "Não foi possível criar o task.",
+      },
+      UPDATE_FAILED: {
+        status: 500,
+        message: "Erro ao atualizar o task.",
+      },
+      DELETE_FAILED: {
+        status: 500,
+        message: "Erro ao excluir o task.",
+      },
+      ERROR: {
+        status: 404,
+        message: "Houve um erro com o task.",
+      },
+    },
     SERVER_ERROR: {
       status: 500,
       message: "Erro interno do servidor. Tente novamente mais tarde.",
@@ -95,6 +117,24 @@ const response = {
       FETCHED: {
         status: 200,
         message: "Projetos recuperados com sucesso.",
+      },
+    },
+    TASK: {
+      CREATED: {
+        status: 201,
+        message: "TASK criado com sucesso.",
+      },
+      UPDATED: {
+        status: 200,
+        message: "TASK atualizado com sucesso.",
+      },
+      DELETED: {
+        status: 200,
+        message: "TASK excluído com sucesso.",
+      },
+      FETCHED: {
+        status: 200,
+        message: "TASK recuperados com sucesso.",
       },
     },
     status: {

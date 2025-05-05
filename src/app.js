@@ -8,11 +8,11 @@ const port = process.env.PORT || 8081
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
-app.use(cors({credentials: true,  origin: 'https://yksynck.vercel.app'}))
+app.use(cors({credentials: true,  origin: '*'}))
 
 require('../config/db').connectDB()
 
-const router = require("./routes/router");
+const router = require("./routes/router");  
 app.use(router)
 
 app.listen(port, () => {
