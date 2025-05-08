@@ -78,6 +78,12 @@ Este projeto foi desenvolvido com as seguintes tecnologias:
 - **MongoDB** — Banco de dados NoSQL flexível
 - **Bcrypt** — Criptografia de senhas
 - **JWT (JSON Web Token)** — Autenticação segura via token
+- **Dnd-kit** — biblioteca de drag and drop ( arrasta e solta) moderna para react.
+- **Calendar.js** — Pequena biblioteca JS pra manipulação e controle de calendários.
+- **Day.js** — Biblioteca JS moderna e enxuta para manipulação de datas e horários.
+- **Chart.js** — Biblioteca JS para criação de gráficos responsivos e interativos.
+- **Zod** — Biblioteca TypeScript-first para validação e parsing de dados de forma segura e declarativa, integrada facilmente a formulários e APIs.
+- **React Hook Form** — Biblioteca leve para gerenciamento de formulários em React, focada em performance, validação flexível (com suporte a Zod).
 
 ---
 
