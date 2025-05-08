@@ -22,7 +22,7 @@ const createTask = async (req, res) => {
 
     res
       .status(response.success.TASK.CREATED.status)
-      .json({ message: response.success.TASK.CREATED.message, newTask });
+      .json({ message: response.success.TASK.CREATED.message,task: newTask });
   } catch (err) {
     console.log(err);
     res
@@ -59,22 +59,22 @@ const updateTask = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const task = await Task.findById(id);
+    const tasks = await Task.findById(id);
 
-    if (!task) {
+    if (!tasks) {
       res
         .status(response.errors.TASK.CREATE_FAILED.status)
         .json({ erros: [response.errors.TASK.CREATE_FAILED.message] });
       return;
     }
 
-    task.status = status;
+    tasks.status = status;
 
-    await task.save();
+    await tasks.save();
 
     res
       .status(response.success.TASK.UPDATED.status)
-      .json({ message: response.success.TASK.UPDATED.message, task });
+      .json({ message: response.success.TASK.UPDATED.message, task: tasks });
   } catch (err) {
     console.error(err);
     res
@@ -87,9 +87,9 @@ const deleteTask = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const task = await Task.findByIdAndDelete(id);
+    const tasks = await Task.findByIdAndDelete(id);
 
-    if (!task) {
+    if (!tasks) {
       return res
         .status(response.errors.TASK.DELETE_FAILED.status)
         .json({ erros: [response.errors.TASK.DELETE_FAILED.message] });
@@ -97,7 +97,7 @@ const deleteTask = async (req, res) => {
 
     res
       .status(response.success.TASK.DELETED.status)
-      .json({ message: response.success.TASK.DELETED.message, task });
+      .json({ message: response.success.TASK.DELETED.message, tasks });
   } catch (err) {
     console.log(err);
     res
