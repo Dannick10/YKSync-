@@ -39,6 +39,15 @@
 | **Categorização de stacks (Frontend, Backend, Database, Testes).** |
 | Visualização de tecnologias associadas a cada projeto. |
 | Estatísticas baseadas em todos os projetos adicionados. |
+---
+
+📋 Organizador de Tarefas
+
+![todolist](https://github.com/user-attachments/assets/bc2fa859-f97a-43e7-a628-9d0d3c0e0652)
+|:--|
+| **Sistema Kanban com colunas personalizadas (A Fazer, Em Andamento, Concluído, Finalizado).** |
+| Organização visual de tarefas por status, com mecânica de arrastar e soltar (drag & drop). |
+| Acompanhamento do progresso de cada tarefa dentro dos projetos. |
 
 ## ⚙️ Recursos Técnicos
 
